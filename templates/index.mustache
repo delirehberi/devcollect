@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Github Login</title>
+    </head>
+    <body>
+        {{^isLogin}}
+            <a href="{{codeFlowUri}}?1">Login With Github</a>
+        {{/isLogin}}
+        {{#isLogin}}
+        <h1> Hello </h1>
+        {{#user}}
+            Howdy {{name}}
+        {{/user}}
+        {{/isLogin}}
+    </body>
+</html>

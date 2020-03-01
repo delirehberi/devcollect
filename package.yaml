@@ -1,0 +1,49 @@
+library:
+  source-dirs: src
+tests:
+  devcollect-test:
+    source-dirs: test
+    main: Spec.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - devcollect
+copyright: 2020 Author name here
+maintainer: example@example.com
+dependencies:
+- parsec
+- uri-bytestring
+- base >= 4.7 && < 5
+- scotty
+- stm
+- hoauth2
+- bytestring
+- mustache
+- text
+- aeson
+- unordered-containers
+- hashable
+- http-conduit
+- wai
+- warp
+name: devcollect
+version: 0.1.0.0
+extra-source-files:
+- README.md
+- ChangeLog.md
+author: Author name here
+github: githubuser/devcollect
+license: BSD3
+executables:
+  devcollect-exe:
+    source-dirs: app
+    main: Main.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - devcollect
+description: Please see the README on GitHub at <https://github.com/githubuser/devcollect#readme>
