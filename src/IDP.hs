@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module IDP where
 
 import Types
@@ -11,4 +10,4 @@ initGithubIDP :: CacheStore -> IO ()
 initGithubIDP cache = insertIDPData cache $ mkIDPData (IDPApp IGithub.Github)
 
 mkIDPData :: IDPApp -> IDPData
-mkIDPData (IDPApp idp) = IDPData "authUri idp" Nothing Nothing (idpLabel idp)
+mkIDPData (IDPApp idp) = IDPData (authUri idp) Nothing Nothing (idpLabel idp)
