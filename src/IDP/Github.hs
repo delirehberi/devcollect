@@ -5,7 +5,7 @@
 module IDP.Github where
 
 import           Data.Aeson
-import Data.Bifunctor
+import           Data.Bifunctor
 import           GHC.Generics
 import           Data.Hashable
 import           Types
@@ -16,7 +16,7 @@ import           URI.ByteString.QQ
 
 import           Keys
 import           Data.Text.Lazy                 ( Text )
-import Utils
+import           Utils
 
 
 data Github = Github deriving (Show,Generic)
@@ -39,10 +39,13 @@ instance HasUserReq Github where
     return (second toLoginUser re)
 
 instance HasAuthUri Github where
-    authUri _ = createCodeUri githubKey [("state","Github.test-state-123")]
+  authUri _ = createCodeUri
+    githubKey
+    [("state", "Github.test-state-123"), ("scope", "repo, user, gist")]
 
 instance FromJSON GithubUser where
-    parseJSON = genericParseJSON defaultOptions {fieldLabelModifier = camelTo2 '_'}
+  parseJSON =
+    genericParseJSON defaultOptions { fieldLabelModifier = camelTo2 '_' }
 
 data GithubUser = GithubUser { name :: Text
     ,id :: Integer
