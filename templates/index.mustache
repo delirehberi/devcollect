@@ -3,6 +3,7 @@
         <title>Github Login</title>
     </head>
     <body>
+       {{#idps}}
         {{^isLogin}}
             <a href="{{codeFlowUri}}?1">Login With Github</a>
         {{/isLogin}}
@@ -12,5 +13,6 @@
             Howdy {{name}}
         {{/user}}
         {{/isLogin}}
+       {{/idps}}
     </body>
 </html>
