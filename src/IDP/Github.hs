@@ -28,10 +28,10 @@ instance IDP Github
 instance HasLabel Github
 
 instance HasTokenReq Github where
-  tokenReq _ mgr = fetchAccessToken mgr githubKey
+  tokenReq _ mgr secrets = fetchAccessToken mgr $ githubKey secrets
 
 instance HasTokenRefreshReq Github where
-  tokenRefreshReq _ mgr = refreshAccessToken mgr githubKey
+  tokenRefreshReq _ mgr secrets = refreshAccessToken mgr $ githubKey secrets
 
 instance HasUserReq Github where
   userReq _ mgr at = do
@@ -39,8 +39,8 @@ instance HasUserReq Github where
     return (second toLoginUser re)
 
 instance HasAuthUri Github where
-  authUri _ = createCodeUri
-    githubKey
+  authUri _ secrets = createCodeUri
+    (githubKey secrets)
     [("state", "Github.test-state-123"), ("scope", "repo, user, gist")]
 
 instance FromJSON GithubUser where

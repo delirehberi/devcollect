@@ -5,11 +5,12 @@ module Keys where
 
 import           Network.OAuth.OAuth2
 import           URI.ByteString.QQ
+import           Data.Text                      ( Text )
 
-githubKey :: OAuth2
-githubKey = OAuth2
-  { oauthClientId            = ""
-  , oauthClientSecret        = Just ""
+githubKey :: (Text, Text) -> OAuth2
+githubKey (key, secret) = OAuth2
+  { oauthClientId            = key
+  , oauthClientSecret        = Just secret
   , oauthCallback            = Just [uri|http://localhost:3000/oauthCallback|]
   , oauthOAuthorizeEndpoint  = [uri|https://github.com/login/oauth/authorize|]
   , oauthAccessTokenEndpoint =

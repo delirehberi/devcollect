@@ -6,6 +6,7 @@ import           Data.Text.Lazy                 ( Text )
 import qualified Data.Text.Lazy                as TL
 import qualified Data.Text.Encoding            as TE
 import           URI.ByteString
+import           Web.Scotty.Internal.Types
 
 
 createCodeUri :: OAuth2 -> [(ByteString, ByteString)] -> Text
@@ -15,3 +16,10 @@ createCodeUri key params =
     $ serializeURIRef'
     $ appendQueryParams params
     $ authorizationUrl key
+
+
+paramValue :: Text -> [Param] -> [Text]
+paramValue key = fmap snd . filter (hasParam key)
+
+hasParam :: Text -> Param -> Bool
+hasParam t = (== t) . fst

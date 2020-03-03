@@ -1,5 +1,9 @@
-{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE AllowAmbiguousTypes       #-}
 {-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE RankNTypes                #-}
+{-# LANGUAGE TypeFamilies              #-}
+{-# LANGUAGE DeriveGeneric             #-}
 
 module Types where
 import           Network.OAuth.OAuth2
@@ -16,10 +20,13 @@ import           Control.Concurrent.MVar
 import qualified Data.ByteString.Lazy.Char8    as BSL
 import           Data.Hashable
 import           Network.HTTP.Conduit
+import           GHC.Generics
+import qualified Data.Text                     as T
 
 type IDPLabel = Text
 type CacheStore = MVar (Map.HashMap IDPLabel IDPData)
 
+data Errors = SomeRandomError deriving (Show,Eq,Generic )
 
 data IDPData =
     IDPData { codeFlowUri :: Text
@@ -31,16 +38,16 @@ data IDPData =
 class (Hashable a, Show a) => IDP a
 
 class (IDP a) => HasAuthUri a where
-    authUri :: a -> Text
+    authUri :: a -> (T.Text,T.Text) -> Text
 class (IDP a) => HasLabel a where
     idpLabel :: a -> IDPLabel
     idpLabel = TL.pack . show
 class (IDP a) => HasUserReq a where
-    userReq :: a -> Manager -> AccessToken -> IO (Either BSL.ByteString LoginUser)
+    userReq :: a -> Manager -> AccessToken  -> IO (Either BSL.ByteString LoginUser)
 class (IDP a) => HasTokenReq a where
-    tokenReq :: a -> Manager ->ExchangeToken -> IO (OAuth2Result TR.Errors OAuth2Token)
+    tokenReq :: a -> Manager -> (T.Text,T.Text) -> ExchangeToken -> IO (OAuth2Result TR.Errors OAuth2Token)
 class (IDP a) => HasTokenRefreshReq a where
-    tokenRefreshReq :: a -> Manager -> RefreshToken -> IO (OAuth2Result TR.Errors OAuth2Token)
+    tokenRefreshReq :: a -> Manager -> (T.Text,T.Text) -> RefreshToken ->  IO (OAuth2Result TR.Errors OAuth2Token)
 
 data IDPApp = forall a. (IDP a,
                     HasTokenRefreshReq a,
