@@ -18,7 +18,6 @@ import           Session
 import           Types
 import           IDP
 import           Control.Monad.Error.Class
-import           Control.Monad
 import           Web.Scotty
 import           Web.Scotty.Internal.Types
 import           Control.Monad.IO.Class         ( liftIO )
@@ -34,7 +33,14 @@ import qualified Data.Text                     as T
 
 app :: Int -> T.Text -> T.Text -> IO ()
 app port githubClientKey githubClientSecret =
-  putStrLn ("Starting server at " ++ show port)
+  putStrLn
+      (  "Starting server at "
+      ++ show port
+      ++ " and cridentials "
+      ++ show githubClientKey
+      ++ " "
+      ++ show githubClientSecret
+      )
     >>  waiApp githubClientKey githubClientSecret
     >>= run port
 
@@ -44,7 +50,7 @@ waiApp key secret = do
   initGithubIDP cache (key, secret)
   scottyApp $ do
     get "/" $ indexH cache
-    get "/oauth2/callback" $ callbackH cache (key, secret)
+    get "/oauthCallback" $ callbackH cache (key, secret)
 
 debug :: Bool
 debug = True
@@ -78,7 +84,7 @@ fetchTokenAndUser c code secrets = do
     Left  err   -> errorM ("FetchTokenAndUser: " `TL.append` err)
  where
   lookIdp c1 idp1 = liftIO $ lookupKey c1 (idpLabel idp1)
-  updateIdp c1 oldIdpData luser = liftIO $ insertIDPData c1 (oldIdpData)
+  updateIdp c1 oldIdpData luser = liftIO $ insertIDPData c1 oldIdpData
 
 
 tryFetchUser
@@ -101,7 +107,5 @@ fetchUser
   :: (HasUserReq a) => a -> Manager -> AccessToken -> IO (Either Text LoginUser)
 fetchUser idp mgr token = do
   re <- userReq idp mgr token
-  return (first displayOAuth2Error re) {-TODO-}
+  return (first bslToText re)
 
-displayOAuth2Error :: OAuth2Error Errors -> Text
-displayOAuth2Error = TL.pack . show
