@@ -14,6 +14,7 @@ copyright: 2020 Author name here
 maintainer: example@example.com
 dependencies:
   - mtl
+  - lens
   - parsec
   - uri-bytestring
   - base >= 4.7 && < 5
